@@ -129,13 +129,23 @@ echo "   LogLevel ERROR" >> ~/.ssh/config
 # Checkout submodules
 cd "$BUILD_DIR"
 
+# Clean build dir (we need to checkout it again ...)
+rm -rf *
+
 # Somehow the repository is not initialized on Heroku?
 git init
-git remote add origin $GIT_URL
-git fetch
+git remote add origin "$GIT_URL"
+git fetch origin
 
-git submodule update --init --recursive
-git submodule status
+# Get remote default branch
+DEFAULT_BRANCH="$(git remote show upstream | grep 'HEAD branch' | sed 's/.*: //')"
+
+# Pull
+git pull origin "${REMOTE_BRANCH:-DEFAULT_BRANCH}"
+
+# Update and initialize submodules
+git submodule update --init --recursive | indent
+git submodule status | indent
 cd ".."
 
 ls -al "$BUILD_DIR"
