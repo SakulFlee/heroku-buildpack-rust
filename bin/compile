@@ -97,6 +97,10 @@ echo "   LogLevel ERROR" >> ~/.ssh/config
 
 # Checkout submodules
 cd "$BUILD_DIR"
+
+# Somehow the repository is not initialized on Heroku?
+git init
+
 git submodule update --init --recursive
 git submodule status
 cd ".."
