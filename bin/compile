@@ -89,10 +89,7 @@ if [ -d "$RUSTUP_HOME" ] && [ -d "$CARGO_HOME" ]; then
 else
     echo "Failed finding rustup or cargo home in cache; Performing installation ..." | indent
 
-    cmd "curl https://sh.rustup.rs -sSf > $CACHE_DIR/rustup.sh"
-    cmd "chmod u+x $CACHE_DIR/rustup.sh"
-    cmd "$CACHE_DIR/rustup.sh -y --default-toolchain $RUST_TOOLCHAIN"
-    cmd "rm $CACHE_DIR/rustup.sh"
+    cmd "curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $RUST_TOOLCHAIN"
 fi
 
 # --- Rust compilation ---
