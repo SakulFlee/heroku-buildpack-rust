@@ -206,7 +206,7 @@ else
 
     echo "$RUSTUP_SOURCE" > "$RUSTUP_PATH"
     chmod +x "$RUSTUP_PATH"
-    cmd "$RUSTUP_PATH -y --default-toolchain $RUST_TOOLCHAIN"
+    cmd "RUSTUP_HOME='$RUSTUP_HOME' CARGO_HOME='$CARGO_HOME' $RUSTUP_PATH -y --default-toolchain $RUST_TOOLCHAIN"
     rm "$RUSTUP_PATH"
 fi
 
