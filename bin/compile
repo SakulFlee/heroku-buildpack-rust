@@ -79,6 +79,14 @@ if [ ! -d "$CACHE_DIR" ]; then
     mkdir -p "$CACHE_DIR"
 fi
 
+# --- Check for submodules ---
+echo "-----> Checking and updating submodules"
+
+echo "$GIT_SSH_KEY" > git_ssh_key.priv
+chmod 0600 git_ssh_key.priv
+ssh-add git_ssh_key.priv
+git submodule update --init --recursive
+
 # --- Rust installation ---
 echo "-----> Checking Rust, Rustup and Cargo"
 
