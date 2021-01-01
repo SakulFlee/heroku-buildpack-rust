@@ -101,6 +101,8 @@ git submodule update --init --recursive
 git submodule status
 cd ".."
 
+ls -al "$BUILD_DIR"
+
 # --- Rust installation ---
 echo "-----> Checking Rust, Rustup and Cargo"
 
