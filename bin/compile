@@ -118,31 +118,37 @@ if [ ! -d "$CACHE_DIR" ]; then
     mkdir -p "$CACHE_DIR"
 fi
 
-# --- Check for submodules ---
-echo "-----> Checking and updating submodules"
-
-# Install SSH Key 
+# --- Submodules ---
+echo "-----> Submodules"
+echo "-----> Installing SSH Key ..."
 mkdir -p ~/.ssh
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
 cp "$ENV_DIR/GIT_SSH_KEY" ~/.ssh/id_rsa
 echo >> ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
-# SSH Settings (disable warnings)
+echo "-----> Setting SSH settings ..."
 echo "Host *" >> ~/.ssh/config
 echo "   StrictHostKeyChecking no" >> ~/.ssh/config
 echo "   UserKnownHostsFile /dev/null" >> ~/.ssh/config
 echo "   LogLevel ERROR" >> ~/.ssh/config
 
+# Clean build dir (we need to checkout it again ...)
+echo "-----> Cleaning Build-Directory"
+rm -rf "$BUILD_DIR/*"
+
 # Checkout submodules
 cd "$BUILD_DIR"
 
-# Clean build dir (we need to checkout it again ...)
-rm -rf *
+echo "-----> [DEBUG] listing files in BUILD_DIR"
+ls -al .
+echo "(should be empty?)"
 
-# Somehow the repository is not initialized on Heroku?
+echo "-----> Initializing repository"
 git init
+echo "-----> Adding remote"
 git remote add origin "$GIT_URL"
+echo "-----> Fetching from remote"
 git fetch origin
 
 # Get remote default branch
@@ -155,15 +161,15 @@ else
     BRANCH="$REMOTE_BRANCH"
 fi
 
-# Pull
+echo "-----> Pulling from $BRANCH"
 git pull origin "$BRANCH"
 
-# Update and initialize submodules
+echo "-----> Updating and initializing submodules"
 git submodule update --init --recursive | indent
 git submodule status | indent
-cd ".."
 
-ls -al "$BUILD_DIR"
+# Move out of build directory
+cd ".."
 
 # --- Rust installation ---
 echo "-----> Checking Rust, Rustup and Cargo"
