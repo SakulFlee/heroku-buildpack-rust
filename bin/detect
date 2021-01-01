@@ -1,0 +1,90 @@
+#!/bin/sh
+
+# --- Helper ---
+indent() {
+    sed -u 's/^/       /'
+}
+
+# --- Variables ---
+echo "-----> Checking variables"
+
+if [ -z "$RUST_TARGET" ]; then
+    echo ""
+    echo "No RUST_TARGET env-var set!" | indent
+    echo "Setting to default value." | indent
+    RUST_TARGET="x86_64-unknown-linux-gnu"
+fi
+echo "[env] RUST_TARGET: $RUST_TARGET" | indent
+
+if [ -z "$RUST_CHANNEL" ]; then
+    echo ""
+    echo "No RUST_CHANNEL env-var set!" | indent
+    echo "Setting to default value." | indent
+    RUST_CHANNEL="stable"
+fi
+echo "[env] RUST_CHANNEL: $RUST_CHANNEL" | indent
+
+RUST_TOOLCHAIN="$RUST_CHANNEL-$RUST_TARGET"
+echo ""
+echo "[env] RUST_TOOLCHAIN: $RUST_TOOLCHAIN" | indent
+
+if [ -z "$CARGO_WORKSPACE" ]; then
+    echo ""
+    echo "No CARGO_WORKSPACE env-var set!" | indent
+    echo "Assuming root to hold cargo workspace." | indent
+    CARGO_WORKSPACE="."
+fi
+echo "[env] CARGO_WORKSPACE: $CARGO_WORKSPACE" | indent
+
+if [ -z "$MANIFEST_PATH" ]; then
+    echo ""
+    echo "No MANIFEST_PATH env-var set!" | indent
+    echo "Assuming root to hold cargo manifest." | indent
+    MANIFEST_PATH="Cargo.toml"
+fi
+echo "[env] MANIFEST_PATH: $MANIFEST_PATH" | indent
+
+CARGO_FULL_MANIFEST_PATH="$1/$CARGO_WORKSPACE/$MANIFEST_PATH"
+echo "[env] CARGO_FULL_MANIFEST_PATH: $CARGO_FULL_MANIFEST_PATH" | indent
+
+if [ ! -z "$BIN" ]; then
+    echo ""
+    echo "BIN to build set." | indent
+    echo "[env] BIN: $BIN" | indent
+fi
+
+if [ ! -z "$EXAMPLE" ]; then
+    echo ""
+    echo "EXAMPLE to build set." | indent
+    echo "[env] EXAMPLE: $EXAMPLE" | indent
+fi
+
+if [ -z "$FEATURES" ]; then
+    echo ""
+    echo "No FEATURES set." | indent
+else
+    echo ""
+    echo "[env] FEATURES: $FEATURES" | indent
+fi
+
+if [ ! -z "$ADDITIONAL_CARGO_FLAGS" ]; then
+    echo ""
+    echo "ADDITIONAL_CARGO_FLAGS set." | indent
+    echo "[env] ADDITIONAL_CARGO_FLAGS: $ADDITIONAL_CARGO_FLAGS" | indent
+fi
+
+# --- Check for submodules ---
+echo "-----> Checking and updating submodules"
+
+git submodule update --init --recursive
+
+# --- Check Cargo Workspace ---
+echo "-----> Checking for Cargo Workspace"
+
+if [ ! -f "$1/$CARGO_WORKSPACE/$MANIFEST_PATH" ]; then
+    echo "Failed finding Cargo workspace at '$CARGO_WORKSPACE/$MANIFEST_PATH'!" | indent
+    exit 1
+else
+    echo "Found Cargo workspace at '$CARGO_WORKSPACE/$MANIFEST_PATH'!" | indent
+    exit 0
+fi
