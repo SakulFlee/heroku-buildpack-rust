@@ -9,7 +9,7 @@ cmd() {
     COMMAND=$1
     
     echo "[exec] $COMMAND" | indent
-    $COMMAND
+    RUSTUP_HOME="$RUSTUP_HOME" CARGO_HOME="$CARGO_HOME" $COMMAND
     STATUS=$?
 
     if [ $STATUS -ne 0 ]; then
@@ -203,10 +203,6 @@ else
     if [ -d "$CACHE_DIR" ]; then
         mkdir -p "$CACHE_DIR"
     fi
-
-    # Re-Export variables
-    export RUSTUP_HOME="$RUSTUP_HOME" 
-    export CARGO_HOME="$CARGO_HOME"
 
     echo "$RUSTUP_SOURCE" > "$RUSTUP_PATH"
     chmod +x "$RUSTUP_PATH"
