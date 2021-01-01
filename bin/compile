@@ -115,7 +115,7 @@ cd "$BUILD_DIR"
 
 # Somehow the repository is not initialized on Heroku?
 git init
-git remote set origin $GIT_URL
+git remote set-url origin $GIT_URL
 git fetch
 
 git submodule update --init --recursive
