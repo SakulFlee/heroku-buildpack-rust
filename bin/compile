@@ -25,7 +25,9 @@ ENV_DIR=$3
 
 export RUSTUP_HOME="$CACHE_DIR/rustup_home"
 export CARGO_HOME="$CACHE_DIR/cargo_home"
-export PATH="$CARGO_HOME/bin:$PATH"
+export CARGO_BIN_DIR="$CARGO_HOME/bin"
+export CARGO_BIN="$CARGO_BIN_DIR/cargo"
+export PATH="$CARGO_HOME_DIR:$PATH"
 export CARGO_TARGET_DIR="$CACHE_DIR/target"
 
 if [ -z "$RUST_TARGET" ]; then
@@ -109,7 +111,7 @@ fi
 # --- Rust compilation ---
 echo "-----> Rust project compilation"
 
-CARGO_COMMAND="cargo build"
+CARGO_COMMAND="$CARGO_BIN build"
 
 if [ ! -z "$RUST_TARGET" ]; then
     CARGO_COMMAND="$CARGO_COMMAND --target $RUST_TARGET"
