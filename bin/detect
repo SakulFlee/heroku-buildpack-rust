@@ -80,6 +80,7 @@ if [ -z "$GIT_SSH_KEY" ]; then
 fi
 
 # --- Check for submodules ---
+# Note: May not work
 echo "-----> Checking and updating submodules"
 
 # Install SSH Key 
