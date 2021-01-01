@@ -152,7 +152,7 @@ echo "-----> Fetching from remote"
 git fetch --all
 
 # Get remote default branch
-DEFAULT_BRANCH="$(git remote show upstream | grep 'HEAD branch' | sed 's/.*: //')"
+DEFAULT_BRANCH="$(git remote show origin | grep 'HEAD branch' | sed 's/.*: //')"
 
 # Determine branch to pull on
 if [ -z "$REMOTE_BRANCH" ]; then
@@ -161,7 +161,7 @@ else
     BRANCH="$REMOTE_BRANCH"
 fi
 
-echo "-----> Pulling from $BRANCH"
+echo "-----> Pulling from '$BRANCH'"
 git reset --hard "origin/$BRANCH"
 
 echo "-----> Updating and initializing submodules"
