@@ -18,10 +18,21 @@ cmd() {
     fi
 }
 
-# --- Variables ---
+# --- Directories ---
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
+
+echo "Build content:" | indent
+ls -al "$BUILD_DIR"
+
+echo "Cache content:" | indent
+ls -al "$CACHE_DIR"
+
+echo "ENV content:" | indent
+ls -al "$ENV_DIR"
+
+# --- Variables ---
 
 export RUSTUP_HOME="$CACHE_DIR/rustup_home"
 export CARGO_HOME="$CACHE_DIR/cargo_home"
@@ -98,9 +109,6 @@ if [ ! -d "$CACHE_DIR" ]; then
     echo "Did not find cache directory!" | indent
     mkdir -p "$CACHE_DIR"
 fi
-
-echo "Cache content:" | indent
-ls -al "$CACHE_DIR"
 
 # --- Check for submodules ---
 echo "-----> Checking and updating submodules"
