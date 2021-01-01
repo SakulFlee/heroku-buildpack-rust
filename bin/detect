@@ -97,6 +97,7 @@ echo "   LogLevel ERROR" >> ~/.ssh/config
 
 # Checkout submodules
 git submodule update --init --recursive
+git submodule status
 
 # --- Check Cargo Workspace ---
 echo "-----> Checking for Cargo Workspace"

@@ -97,6 +97,7 @@ echo "   LogLevel ERROR" >> ~/.ssh/config
 
 # Checkout submodules
 git submodule update --init --recursive
+git submodule status
 
 # --- Rust installation ---
 echo "-----> Checking Rust, Rustup and Cargo"
