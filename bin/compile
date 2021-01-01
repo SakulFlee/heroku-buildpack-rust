@@ -82,7 +82,6 @@ if [ ! -f "$ENV_DIR/GIT_URL" ]; then
     echo "Checking out submodules might not work." | indent
 fi
 GIT_URL="$(cat $ENV_DIR/GIT_URL)"
-echo "[env] GIT_URL: $GIT_URL" | indent
 
 # --- Check Cache ---
 echo "-----> Checking cache" 
@@ -117,7 +116,7 @@ cd "$BUILD_DIR"
 
 # Somehow the repository is not initialized on Heroku?
 git init
-git remote set-url origin $GIT_URL
+git remote add origin $GIT_URL
 git fetch
 
 git submodule update --init --recursive
