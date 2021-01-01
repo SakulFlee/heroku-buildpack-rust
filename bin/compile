@@ -96,10 +96,10 @@ echo "   UserKnownHostsFile /dev/null" >> ~/.ssh/config
 echo "   LogLevel ERROR" >> ~/.ssh/config
 
 # Checkout submodules
-pushd "$BUILD_DIR"
+cd "$BUILD_DIR"
 git submodule update --init --recursive
 git submodule status
-popd
+cd ".."
 
 # --- Rust installation ---
 echo "-----> Checking Rust, Rustup and Cargo"
