@@ -204,9 +204,13 @@ else
         mkdir -p "$CACHE_DIR"
     fi
 
+    # Re-Export variables
+    export RUSTUP_HOME="$RUSTUP_HOME" 
+    export CARGO_HOME="$CARGO_HOME"
+
     echo "$RUSTUP_SOURCE" > "$RUSTUP_PATH"
     chmod +x "$RUSTUP_PATH"
-    cmd "RUSTUP_HOME='$RUSTUP_HOME' CARGO_HOME='$CARGO_HOME' $RUSTUP_PATH -y --default-toolchain $RUST_TOOLCHAIN"
+    cmd "$RUSTUP_PATH -y --default-toolchain $RUST_TOOLCHAIN"
     rm "$RUSTUP_PATH"
 fi
 
