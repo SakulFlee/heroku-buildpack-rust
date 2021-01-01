@@ -82,9 +82,20 @@ fi
 # --- Check for submodules ---
 echo "-----> Checking and updating submodules"
 
-echo "$GIT_SSH_KEY" > git_ssh_key.priv
-chmod 0600 git_ssh_key.priv
-ssh-add git_ssh_key.priv
+# Install SSH Key 
+mkdir -p ~/.ssh
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> /dev/null
+cp "$ENV_DIR/GIT_SSH_KEY" ~/.ssh/id_rsa
+echo >> ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+
+# SSH Settings (disable warnings)
+echo "Host *" >> ~/.ssh/config
+echo "   StrictHostKeyChecking no" >> ~/.ssh/config
+echo "   UserKnownHostsFile /dev/null" >> ~/.ssh/config
+echo "   LogLevel ERROR" >> ~/.ssh/config
+
+# Checkout submodules
 git submodule update --init --recursive
 
 # --- Rust installation ---
