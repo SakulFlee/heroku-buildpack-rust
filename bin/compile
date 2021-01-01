@@ -1,0 +1,127 @@
+#!/bin/sh
+
+# --- Helper ---
+indent() {
+    sed -u 's/^/       /'
+}
+
+cmd() {
+    COMMAND=$1
+    
+    echo "[exec] $COMMAND" | indent
+    $COMMAND
+    STATUS=$?
+
+    if [ $STATUS -ne 0 ]; then
+        echo "Command execution failed with: $STATUS"
+        exit $STATUS
+    fi
+}
+
+# --- Variables ---
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+
+export RUSTUP_HOME="$CACHE_DIR/rustup_home"
+export CARGO_HOME="$CACHE_DIR/cargo_home"
+export PATH="$CARGO_HOME/bin:$PATH"
+export CARGO_TARGET_DIR="$CACHE_DIR/target"
+
+if [ -z "$RUST_TARGET" ]; then
+    echo ""
+    echo "No RUST_TARGET env-var set!" | indent
+    echo "Setting to default value." | indent
+    
+    RUST_TARGET="x86_64-unknown-linux-gnu"
+    echo "[env] RUST_TARGET: $RUST_TARGET" | indent
+fi
+
+if [ -z "$RUST_CHANNEL" ]; then
+    echo ""
+    echo "No RUST_CHANNEL env-var set!" | indent
+    echo "Setting to default value." | indent
+    
+    RUST_CHANNEL="stable"
+    echo "[env] RUST_CHANNEL: $RUST_CHANNEL" | indent
+fi
+
+export RUST_TOOLCHAIN="$RUST_CHANNEL-$RUST_TARGET"
+echo "[env] RUST_TOOLCHAIN: $RUST_TOOLCHAIN" | indent
+
+if [ -z "$CARGO_WORKSPACE" ]; then
+    echo ""
+    echo "No CARGO_WORKSPACE env-var set!" | indent
+    echo "Assuming root to hold cargo workspace." | indent
+    CARGO_WORKSPACE="."
+fi
+echo "[env] CARGO_WORKSPACE: $CARGO_WORKSPACE" | indent
+
+if [ -z "$MANIFEST_PATH" ]; then
+    echo ""
+    echo "No MANIFEST_PATH env-var set!" | indent
+    echo "Assuming root to hold cargo manifest." | indent
+    MANIFEST_PATH="Cargo.toml"
+fi
+echo "[env] MANIFEST_PATH: $MANIFEST_PATH" | indent
+
+CARGO_FULL_MANIFEST_PATH="$1/$CARGO_WORKSPACE/$MANIFEST_PATH"
+echo "[env] CARGO_FULL_MANIFEST_PATH: $CARGO_FULL_MANIFEST_PATH" | indent
+
+# --- Check Cache ---
+echo "-----> Checking cache"
+
+if [ ! -d "$CACHE_DIR" ]; then
+    echo ""
+    echo "Did not find cache directory!" | indent
+    mkdir -p "$CACHE_DIR"
+fi
+
+# --- Rust installation ---
+echo "-----> Checking Rust, Rustup and Cargo"
+
+if [ -d "$RUSTUP_HOME" ] && [ -d "$CARGO_HOME" ]; then
+    echo "Found rustup and cargo home in cache; Performing updates ..." | indent
+    
+    cmd "rustup self update"
+    cmd "rustup update "
+    cmd "rustup default $RUST_TOOLCHAIN"
+else
+    echo "Failed finding rustup or cargo home in cache; Performing installation ..." | indent
+
+    cmd "curl https://sh.rustup.rs -sSf > $CACHE_DIR/rustup.sh"
+    cmd "chmod u+x $CACHE_DIR/rustup.sh"
+    cmd "$CACHE_DIR/rustup.sh -y --default-toolchain $RUST_TOOLCHAIN"
+    cmd "rm $CACHE_DIR/rustup.sh"
+fi
+
+# --- Rust compilation ---
+echo "-----> Rust project compilation"
+
+CARGO_COMMAND="cargo build"
+
+if [ ! -z "$RUST_TARGET" ]; then
+    CARGO_COMMAND="$CARGO_COMMAND --target $RUST_TARGET"
+fi
+
+if [ ! -z "$CARGO_FULL_MANIFEST_PATH" ]; then
+    CARGO_COMMAND="$CARGO_COMMAND --manifest-path $CARGO_FULL_MANIFEST_PATH"
+fi
+
+if [ ! -z "$BIN" ]; then
+    CARGO_COMMAND="$CARGO_COMMAND --bin $BIN"
+fi
+
+if [ ! -z "$EXAMPLE" ]; then
+    CARGO_COMMAND="$CARGO_COMMAND --example $EXAMPLE"
+fi
+
+if [ ! -z "$FEATURES" ]; then
+    CARGO_COMMAND="$CARGO_COMMAND --features '$FEATURES'"
+fi
+
+if [ ! -z "$ADDITIONAL_CARGO_FLAGS" ]; then
+    CARGO_COMMAND="$CARGO_COMMAND $ADDITIONAL_CARGO_FLAGS"
+fi
+
+cmd "$CARGO_COMMAND"
