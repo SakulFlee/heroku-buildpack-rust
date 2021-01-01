@@ -76,11 +76,13 @@ if [ -z "$GIT_SSH_KEY" ]; then
     echo "Checking out submodules might not work." | indent
 fi
 
-if [ -z "$GIT_URL" ]; then
+if [ ! -f "$ENV_DIR/GIT_URL" ]; then
     echo ""
     echo "No GIT_URL env-var set!" | indent
     echo "Checking out submodules might not work." | indent
 fi
+GIT_URL="$(cat $ENV_DIR/GIT_URL)"
+echo "[env] GIT_URL: $GIT_URL" | indent
 
 # --- Check Cache ---
 echo "-----> Checking cache" 
