@@ -149,7 +149,7 @@ git init
 echo "-----> Adding remote"
 git remote add origin "$GIT_URL"
 echo "-----> Fetching from remote"
-git fetch origin
+git fetch --all
 
 # Get remote default branch
 DEFAULT_BRANCH="$(git remote show upstream | grep 'HEAD branch' | sed 's/.*: //')"
@@ -162,7 +162,7 @@ else
 fi
 
 echo "-----> Pulling from $BRANCH"
-git pull origin "$BRANCH"
+git reset --hard "origin/$BRANCH"
 
 echo "-----> Updating and initializing submodules"
 git submodule update --init --recursive | indent
