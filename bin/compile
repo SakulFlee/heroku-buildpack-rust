@@ -140,10 +140,6 @@ rm -rf "$BUILD_DIR/*"
 # Checkout submodules
 cd "$BUILD_DIR"
 
-echo "-----> [DEBUG] listing files in BUILD_DIR"
-ls -al .
-echo "(should be empty?)"
-
 echo "-----> Initializing repository"
 git init
 echo "-----> Adding remote"
@@ -173,6 +169,20 @@ cd ".."
 
 # --- Rust installation ---
 echo "-----> Checking Rust, Rustup and Cargo"
+
+echo "# RUSTUP_HOME: $RUSTUP_HOME"
+if [ -d "$RUSTUP_HOME" ]; then
+    echo "EXISTS"
+else
+    echo "MISSING"
+fi
+
+echo "# CARGO_HOME: $CARGO_HOME"
+if [ -d "$CARGO_HOME" ]; then
+    echo "EXISTS"
+else
+    echo "MISSING"
+fi
 
 if [ -d "$RUSTUP_HOME" ] && [ -d "$CARGO_HOME" ]; then
     echo "Found rustup and cargo home in cache; Performing updates ..." | indent
