@@ -73,9 +73,18 @@ if [ ! -z "$ADDITIONAL_CARGO_FLAGS" ]; then
     echo "[env] ADDITIONAL_CARGO_FLAGS: $ADDITIONAL_CARGO_FLAGS" | indent
 fi
 
+if [ -z "$GIT_SSH_KEY" ]; then
+    echo ""
+    echo "No GIT_SSH_KEY env-var set!" | indent
+    echo "Checking out submodules might not work." | indent
+fi
+
 # --- Check for submodules ---
 echo "-----> Checking and updating submodules"
 
+echo "$GIT_SSH_KEY" > git_ssh_key.priv
+chmod 0600 git_ssh_key.priv
+ssh-add git_ssh_key.priv
 git submodule update --init --recursive
 
 # --- Check Cargo Workspace ---
