@@ -30,7 +30,9 @@ export CARGO_BIN="$CARGO_BIN_DIR/cargo"
 export PATH="$CARGO_HOME_DIR:$PATH"
 export CARGO_TARGET_DIR="$CACHE_DIR/target"
 
-if [ -z "$RUST_TARGET" ]; then
+if [ -f "$ENV_DIR/RUST_TARGET" ]; then
+    RUST_TARGET="$(cat $ENV_DIR/RUST_TARGET)"
+else
     echo ""
     echo "No RUST_TARGET env-var set!" | indent
     echo "Setting to default value." | indent
@@ -39,7 +41,9 @@ if [ -z "$RUST_TARGET" ]; then
     echo "[env] RUST_TARGET: $RUST_TARGET" | indent
 fi
 
-if [ -z "$RUST_CHANNEL" ]; then
+if [ -f "$ENV_DIR/RUST_CHANNEL" ]; then
+    RUST_CHANNEL="$(cat $ENV_DIR/RUST_CHANNEL)"
+else
     echo ""
     echo "No RUST_CHANNEL env-var set!" | indent
     echo "Setting to default value." | indent
@@ -48,40 +52,43 @@ if [ -z "$RUST_CHANNEL" ]; then
     echo "[env] RUST_CHANNEL: $RUST_CHANNEL" | indent
 fi
 
-export RUST_TOOLCHAIN="$RUST_CHANNEL-$RUST_TARGET"
-echo "[env] RUST_TOOLCHAIN: $RUST_TOOLCHAIN" | indent
+RUST_TOOLCHAIN="$RUST_CHANNEL-$RUST_TARGET"
 
-if [ -z "$CARGO_WORKSPACE" ]; then
+if [ -f "$ENV_DIR/CARGO_WORKSPACE" ]; then
+    CARGO_WORKSPACE="$(cat $ENV_DIR/CARGO_WORKSPACE)"
+else
     echo ""
     echo "No CARGO_WORKSPACE env-var set!" | indent
     echo "Assuming root to hold cargo workspace." | indent
     CARGO_WORKSPACE="."
 fi
-echo "[env] CARGO_WORKSPACE: $CARGO_WORKSPACE" | indent
 
-if [ -z "$MANIFEST_PATH" ]; then
+if [ -f "$ENV_DIR/MANIFEST_PATH" ]; then
+    MANIFEST_PATH="$(cat $ENV_DIR/MANIFEST_PATH)"
+else
     echo ""
     echo "No MANIFEST_PATH env-var set!" | indent
     echo "Assuming root to hold cargo manifest." | indent
     MANIFEST_PATH="Cargo.toml"
 fi
-echo "[env] MANIFEST_PATH: $MANIFEST_PATH" | indent
 
-CARGO_FULL_MANIFEST_PATH="$1/$CARGO_WORKSPACE/$MANIFEST_PATH"
-echo "[env] CARGO_FULL_MANIFEST_PATH: $CARGO_FULL_MANIFEST_PATH" | indent
+CARGO_FULL_MANIFEST_PATH="$BUILD_DIR/$CARGO_WORKSPACE/$MANIFEST_PATH"
 
-if [ -z "$GIT_SSH_KEY" ]; then
+if [ -f "$ENV_DIR/GIT_SSH_KEY" ]; then
+    GIT_SSH_KEY="$(cat $ENV_DIR/GIT_SSH_KEY)"
+else
     echo ""
     echo "No GIT_SSH_KEY env-var set!" | indent
     echo "Checking out submodules might not work." | indent
 fi
 
-if [ ! -f "$ENV_DIR/GIT_URL" ]; then
+if [ -f "$ENV_DIR/GIT_URL" ]; then
+    GIT_URL="$(cat $ENV_DIR/GIT_URL)"
+else
     echo ""
     echo "No GIT_URL env-var set!" | indent
     echo "Checking out submodules might not work." | indent
 fi
-GIT_URL="$(cat $ENV_DIR/GIT_URL)"
 
 # --- Check Cache ---
 echo "-----> Checking cache" 
