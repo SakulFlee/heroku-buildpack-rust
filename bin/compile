@@ -141,7 +141,7 @@ git fetch origin
 DEFAULT_BRANCH="$(git remote show upstream | grep 'HEAD branch' | sed 's/.*: //')"
 
 # Pull
-git pull origin "${REMOTE_BRANCH:-DEFAULT_BRANCH}"
+git pull origin "${$REMOTE_BRANCH:-$DEFAULT_BRANCH}"
 
 # Update and initialize submodules
 git submodule update --init --recursive | indent
