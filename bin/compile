@@ -101,6 +101,14 @@ else
     echo "Checking out submodules might not work." | indent
 fi
 
+if [ -f "$ENV_DIR/REMOTE_BRANCH" ]; then
+    REMOTE_BRANCH="$(cat $ENV_DIR/REMOTE_BRANCH)"
+else
+    echo ""
+    echo "No REMOTE_BRANCH env-var set!" | indent
+    echo "Will try to determine the default branch." | indent
+fi
+
 # --- Check Cache ---
 echo "-----> Checking cache" 
 
@@ -140,8 +148,15 @@ git fetch origin
 # Get remote default branch
 DEFAULT_BRANCH="$(git remote show upstream | grep 'HEAD branch' | sed 's/.*: //')"
 
+# Determine branch to pull on
+if [ -z "$REMOTE_BRANCH" ]; then
+    BRANCH="$DEFAULT_BRANCH"
+else
+    BRANCH="$REMOTE_BRANCH"
+fi
+
 # Pull
-git pull origin "${$REMOTE_BRANCH:-$DEFAULT_BRANCH}"
+git pull origin "$BRANCH"
 
 # Update and initialize submodules
 git submodule update --init --recursive | indent
