@@ -275,8 +275,13 @@ fi
 if [ "$INSTALL_SASS" -eq 1 ]; then
     echo "-----> Installing SASS-Compiler"
 
-    cmd "apt update"
-    cmd "apt install sassc"
+    wget https://github.com/sass/dart-sass/releases/download/1.32.0/dart-sass-1.32.0-linux-x64.tar.gz
+    tar -xvf "dart-sass*.tar.gz"
+
+    ls -al "$CACHE_DIR/dart-sass"
+    export PATH="$PATH:$CACHE_DIR/dart-sass"
+
+    rm "dart-sass*.tar.gz"
 fi
 
 # --- Rust compilation ---
