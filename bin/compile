@@ -14,7 +14,9 @@ cmd() {
     COMMAND=$1
     
     echo "[exec] $COMMAND" | indent
-    RUSTUP_HOME="$RUSTUP_HOME" CARGO_HOME="$CARGO_HOME" $COMMAND
+    export RUSTUP_HOME="$RUSTUP_HOME"
+    export CARGO_HOME="$CARGO_HOME" 
+    eval "$COMMAND"
     STATUS=$?
 
     if [ $STATUS -ne 0 ]; then
