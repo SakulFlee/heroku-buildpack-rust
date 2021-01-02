@@ -256,3 +256,6 @@ if [ ! -z "$ADDITIONAL_CARGO_FLAGS" ]; then
 fi
 
 cmd "$CARGO_COMMAND"
+
+echo "-----> Listing target folder content ..."
+cmd "find $CARGO_TARGET_DIR -maxdepth 2"
