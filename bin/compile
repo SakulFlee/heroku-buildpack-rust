@@ -41,6 +41,17 @@ export CARGO_BIN="$CARGO_BIN_DIR/cargo"
 export PATH="$CARGO_HOME_DIR:$PATH"
 export CARGO_TARGET_DIR="$CACHE_DIR/target"
 
+if [ -f "$ENV_DIR/RELEASE_BUILD" ]; then
+    RELEASE_BUILD="$(cat $ENV_DIR/RELEASE_BUILD)"
+else
+    echo ""
+    echo "No RELEASE_BUILD env-var set!" | indent
+    echo "Setting to default (true) value." | indent
+    
+    RELEASE_BUILD="1"
+    echo "[env] RELEASE_BUILD: $RELEASE_BUILD" | indent
+fi
+
 if [ -f "$ENV_DIR/RUST_TARGET" ]; then
     RUST_TARGET="$(cat $ENV_DIR/RUST_TARGET)"
 else
@@ -214,6 +225,10 @@ fi
 echo "-----> Rust project compilation"
 
 CARGO_COMMAND="$CARGO_BIN build"
+
+if [ "$RELEASE_BUILD" -eq 1 ]; then
+    CARGO_COMMAND="$CARGO_COMMAND --release"
+fi
 
 if [ ! -z "$RUST_TARGET" ]; then
     CARGO_COMMAND="$CARGO_COMMAND --target $RUST_TARGET"
