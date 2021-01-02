@@ -38,6 +38,7 @@ export RUSTUP_HOME="$CACHE_DIR/rustup_home"
 export CARGO_HOME="$CACHE_DIR/cargo_home"
 export CARGO_BIN_DIR="$CARGO_HOME/bin"
 export CARGO_BIN="$CARGO_BIN_DIR/cargo"
+export RUSTUP_BIN="$CARGO_BIN_DIR/rustup"
 export PATH="$CARGO_HOME_DIR:$PATH"
 export CARGO_TARGET_DIR="$CACHE_DIR/target"
 
@@ -198,9 +199,9 @@ fi
 if [ -d "$RUSTUP_HOME" ] && [ -d "$CARGO_HOME" ]; then
     echo "Found rustup and cargo home in cache; Performing updates ..." | indent
     
-    cmd "rustup self update"
-    cmd "rustup update "
-    cmd "rustup default $RUST_TOOLCHAIN"
+    cmd "$RUSTUP_BIN self update"
+    cmd "$RUSTUP_BIN update "
+    cmd "$RUSTUP_BIN default $RUST_TOOLCHAIN"
 else
     echo "Failed finding rustup or cargo home in cache; Performing installation ..." | indent
 
