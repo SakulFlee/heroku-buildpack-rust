@@ -122,19 +122,19 @@ if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
     
     echo ""
     echo "Build content:" | indent
-    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 
     echo ""
     echo "Cache content:" | indent
-    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 
     echo ""
     echo "ENV content:" | indent
-    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 
     echo ""
     echo "Target content:" | indent
-    cmd "find $CARGO_TARGET_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $CARGO_TARGET_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 fi
 
 # --- Check Cache ---
@@ -279,17 +279,17 @@ if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
     
     echo ""
     echo "Build content:" | indent
-    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 
     echo ""
     echo "Cache content:" | indent
-    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 
     echo ""
     echo "ENV content:" | indent
-    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 
     echo ""
     echo "Target content:" | indent
-    cmd "find $CARGO_TARGET_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+    cmd "find $CARGO_TARGET_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
 fi
