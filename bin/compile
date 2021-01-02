@@ -23,14 +23,18 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 
-echo "Build content:" | indent
-ls -al "$BUILD_DIR"
+if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
+    echo "-----> Listing content of heroku folders"
+    
+    echo "Build content:" | indent
+    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
 
-echo "Cache content:" | indent
-ls -al "$CACHE_DIR"
+    echo "Cache content:" | indent
+    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
 
-echo "ENV content:" | indent
-ls -al "$ENV_DIR"
+    echo "ENV content:" | indent
+    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+fi
 
 # --- Variables ---
 
@@ -257,5 +261,7 @@ fi
 
 cmd "$CARGO_COMMAND"
 
-echo "-----> Listing target folder content ..."
-cmd "find $CARGO_TARGET_DIR -maxdepth 2"
+if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
+    echo "-----> Listing target folder content ..."
+    cmd "find $CARGO_TARGET_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+fi
