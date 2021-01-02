@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# --- Directories ---
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+
 # --- Helper ---
 indent() {
     sed -u 's/^/       /'
@@ -17,24 +22,6 @@ cmd() {
         exit $STATUS
     fi
 }
-
-# --- Directories ---
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
-
-if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
-    echo "-----> Listing content of heroku folders"
-    
-    echo "Build content:" | indent
-    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
-
-    echo "Cache content:" | indent
-    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
-
-    echo "ENV content:" | indent
-    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
-fi
 
 # --- Variables ---
 
@@ -123,6 +110,31 @@ else
     echo ""
     echo "No REMOTE_BRANCH env-var set!" | indent
     echo "Will try to determine the default branch." | indent
+fi
+
+if [ -f "$ENV_DIR/DEBUG" ]; then
+    DEBUG="$(cat $ENV_DIR/DEBUG)"
+fi
+
+# --- Debug directories (before) ---
+if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
+    echo "-----> Listing content of heroku folders"
+    
+    echo ""
+    echo "Build content:" | indent
+    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+
+    echo ""
+    echo "Cache content:" | indent
+    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+
+    echo ""
+    echo "ENV content:" | indent
+    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+
+    echo ""
+    echo "Target content:" | indent
+    cmd "find $CARGO_TARGET_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
 fi
 
 # --- Check Cache ---
@@ -261,7 +273,23 @@ fi
 
 cmd "$CARGO_COMMAND"
 
+# --- Debug directories (after) ---
 if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
-    echo "-----> Listing target folder content ..."
+    echo "-----> Listing content of heroku folders"
+    
+    echo ""
+    echo "Build content:" | indent
+    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+
+    echo ""
+    echo "Cache content:" | indent
+    cmd "find $CACHE_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+
+    echo ""
+    echo "ENV content:" | indent
+    cmd "find $ENV_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
+
+    echo ""
+    echo "Target content:" | indent
     cmd "find $CARGO_TARGET_DIR | sed -e 's/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/'"
 fi
