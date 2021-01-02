@@ -275,6 +275,9 @@ fi
 
 cmd "$CARGO_COMMAND"
 
+echo "-----> Copy target from cache"
+cp -r "$CARGO_TARGET_DIR" "$BUILD_DIR"
+
 # --- Debug directories (after) ---
 if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
     echo "-----> Listing content of heroku folders"
