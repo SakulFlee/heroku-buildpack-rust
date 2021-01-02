@@ -134,6 +134,14 @@ if [ -f "$ENV_DIR/DEBUG" ]; then
     DEBUG="$(cat $ENV_DIR/DEBUG)"
 fi
 
+if [ -f "$ENV_DIR/INSTALL_WASM_PACK" ]; then
+    INSTALL_WASM_PACK="$(cat $ENV_DIR/INSTALL_WASM_PACK)"
+fi
+
+if [ -f "$ENV_DIR/INSTALL_SASS" ]; then
+    INSTALL_SASS="$(cat $ENV_DIR/INSTALL_SASS)"
+fi
+
 # --- Debug directories (before) ---
 if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
     echo "-----> Listing content of heroku folders"
@@ -254,6 +262,21 @@ else
     chmod +x "$RUSTUP_PATH"
     cmd "$RUSTUP_PATH -y --default-toolchain $RUST_TOOLCHAIN"
     rm "$RUSTUP_PATH"
+fi
+
+# --- Install WASM-Pack ---
+if [ "$INSTALL_WASM_PACK" -eq 1 ]; then
+    echo "-----> Installing WASM-Pack"
+
+    cmd "$CARGO_BIN install wasm-pack"
+fi
+
+# --- Install SASS ---
+if [ "$INSTALL_SASS" -eq 1 ]; then
+    echo "-----> Installing SASS-Compiler"
+
+    cmd "apt update"
+    cmd "apt install sassc"
 fi
 
 # --- Rust compilation ---
