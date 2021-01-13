@@ -325,7 +325,8 @@ fi
 cmd "$CARGO_COMMAND"
 
 echo "-----> Clean build directory"
-cmd "rm -rf '$BUILD_DIR/*'"
+cmd "cd $BUILD_DIR"
+cmd "rm -rf *"
 
 if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
     echo ""
