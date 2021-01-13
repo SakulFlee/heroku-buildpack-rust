@@ -324,8 +324,19 @@ fi
 
 cmd "$CARGO_COMMAND"
 
+echo "-----> Clean build directory"
+cmd "rm -rf '$BUILD_DIR/*'"
+
+if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
+    echo ""
+    echo "Build content:" | indent
+    cmd "find $BUILD_DIR | sed -e 's/[^-][^\/]*\// |/g' -e 's/|\([^ ]\)/|-\1/'"
+
+    cmd "du -sh $BUILD_DIR"
+fi
+
 echo "-----> Copy target from cache"
-cp -r "$CARGO_TARGET_DIR" "$BUILD_DIR"
+cmd "cp -r '$CARGO_TARGET_DIR' '$BUILD_DIR'"
 
 # --- Debug directories (after) ---
 if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
