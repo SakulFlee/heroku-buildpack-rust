@@ -337,8 +337,12 @@ if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
 fi
 
 echo "-----> Copy target from cache"
+# Ensure target directory exists
+COPY_TARGET_DIR="$BUILD_DIR/target"
+cmd "mkdir -p $COPY_TARGET_DIR"
+# Copy files
 cmd "cd $CARGO_TARGET_DIR"
-cmd "find * -maxdepth 1 -type f -exec cp --parents \{\} $BUILD_DIR/target \;"
+cmd "find * -maxdepth 1 -type f -exec cp --parents \{\} $COPY_TARGET_DIR \;"
 
 # --- Debug directories (after) ---
 if [ ! -z "$DEBUG" ] && [ "$DEBUG" -eq 1 ]; then
