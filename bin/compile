@@ -234,14 +234,14 @@ else
 fi
 
 # --- Install WASM-Pack ---
-if [ "$INSTALL_WASM_PACK" -eq 1 ]; then
+if [ ! -z "$INSTALL_WASM_PACK" ]; then
     echo "-----> Installing WASM-Pack"
     
     cmd "$CARGO_BIN install wasm-pack"
 fi
 
 # --- Install SASS ---
-if [ "$INSTALL_SASS" -eq 1 ]; then
+if [ ! -z "$INSTALL_SASS" ]; then
     echo "-----> Installing SASS-Compiler"
     
     cd "$CACHE_DIR"
