@@ -300,7 +300,8 @@ fi
 cmd "$CARGO_COMMAND"
 
 echo "-----> Clean build directory"
-cmd "find $BUILD_DIR ! \( -name Procfile \) -exec rm -rf \{\} \;"
+cd "$BUILD_DIR"
+cmd "find . ! \( -name Procfile \) -exec rm -rf \{\} \;"
 
 echo "-----> Copy target from cache"
 # Ensure target directory exists
