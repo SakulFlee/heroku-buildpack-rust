@@ -15,10 +15,10 @@ cmd() {
     
     echo "[exec] $COMMAND" | indent
     export RUSTUP_HOME="$RUSTUP_HOME"
-    export CARGO_HOME="$CARGO_HOME" 
+    export CARGO_HOME="$CARGO_HOME"
     eval "$COMMAND"
     STATUS=$?
-
+    
     if [ $STATUS -ne 0 ]; then
         echo "Command execution failed with: $STATUS"
         exit $STATUS
@@ -147,7 +147,7 @@ if [ -f "$ENV_DIR/POST_BUILD" ]; then
 fi
 
 # --- Check Cache ---
-echo "-----> Checking cache" 
+echo "-----> Checking cache"
 
 if [ ! -d "$CACHE_DIR" ]; then
     echo ""
@@ -215,18 +215,18 @@ if [ -d "$RUSTUP_HOME" ] && [ -d "$CARGO_HOME" ]; then
     cmd "$RUSTUP_BIN default $RUST_TOOLCHAIN"
 else
     echo "Failed finding rustup or cargo home in cache; Performing installation ..." | indent
-
+    
     RUSTUP_SOURCE="$(curl https://sh.rustup.rs -sSf)"
     RUSTUP_PATH="$CACHE_DIR/rustup.sh"
     if [ $? -ne 0 ]; then
         echo "Failed fetching rustup installation script!" | indent
         exit 1
     fi
-
+    
     if [ -d "$CACHE_DIR" ]; then
         mkdir -p "$CACHE_DIR"
     fi
-
+    
     echo "$RUSTUP_SOURCE" > "$RUSTUP_PATH"
     chmod +x "$RUSTUP_PATH"
     cmd "$RUSTUP_PATH -y --default-toolchain $RUST_TOOLCHAIN"
@@ -236,25 +236,25 @@ fi
 # --- Install WASM-Pack ---
 if [ "$INSTALL_WASM_PACK" -eq 1 ]; then
     echo "-----> Installing WASM-Pack"
-
+    
     cmd "$CARGO_BIN install wasm-pack"
 fi
 
 # --- Install SASS ---
 if [ "$INSTALL_SASS" -eq 1 ]; then
     echo "-----> Installing SASS-Compiler"
-
+    
     cd "$CACHE_DIR"
-
+    
     wget https://github.com/sass/dart-sass/releases/download/1.32.0/dart-sass-1.32.0-linux-x64.tar.gz
     tar -xvf "dart-sass-1.32.0-linux-x64.tar.gz"
-
+    
     ln -s "$CACHE_DIR/dart-sass/sass" "$CACHE_DIR/dart-sass/sassc"
-
+    
     export PATH="$PATH:$CACHE_DIR/dart-sass"
-
+    
     rm "dart-sass-1.32.0-linux-x64.tar.gz"
-
+    
     cd ".."
 fi
 
@@ -263,7 +263,6 @@ if [ ! -z "$PRE_BUILD" ]; then
     echo "-----> Pre-Build Script"
     cmd "eval '$PRE_BUILD'"
 fi
-
 
 # --- Rust compilation ---
 echo "-----> Rust project compilation"
