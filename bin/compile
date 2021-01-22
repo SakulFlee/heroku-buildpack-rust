@@ -146,6 +146,10 @@ if [ -f "$ENV_DIR/POST_BUILD" ]; then
     POST_BUILD="$(cat $ENV_DIR/POST_BUILD)"
 fi
 
+if [ -f "$ENV_DIR/CUSTOM_POST_BUILD_COPY" ]; then
+    CUSTOM_POST_BUILD_COPY="$(cat $ENV_DIR/CUSTOM_POST_BUILD_COPY)"
+fi
+
 # --- Check Cache ---
 echo "-----> Checking cache"
 
@@ -308,8 +312,12 @@ echo "-----> Copy target from cache"
 COPY_TARGET_DIR="$BUILD_DIR/target"
 cmd "mkdir -p $COPY_TARGET_DIR"
 # Copy files
-cmd "cd $CARGO_TARGET_DIR"
-cmd "find * -maxdepth 1 -type f -exec cp --parents \{\} $COPY_TARGET_DIR \;"
+if [ ! -z "$CUSTOM_POST_BUILD_COPY" ]; then
+    echo "Custom post-build copy instructions detected!" | indent
+    cmd "eval '$CUSTOM_POST_BUILD_COPY'"
+else
+    cmd "cp -r $CARGO_TARGET_DIR $COPY_TARGET_DIR"
+fi
 
 # --- Post-Build ---
 if [ ! -z "$POST_BUILD" ]; then
